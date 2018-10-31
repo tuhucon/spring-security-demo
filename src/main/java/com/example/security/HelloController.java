@@ -4,10 +4,8 @@ import java.security.Security;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpSession;
-import javax.swing.plaf.synth.SynthTextAreaUI;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.SecurityContextProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
 
+
+
     @Autowired
     UserDetailsService userDetailsService;
 
@@ -32,8 +34,10 @@ public class HelloController {
     AuthenticationManager authenticationManager;
 
     @Autowired
-    UserDetailsManager userDetailsManager;
+    JdbcUserDetailsManager userDetailsManager;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @GetMapping("/hello")
     public String hello(HttpSession session) {
@@ -69,7 +73,7 @@ public class HelloController {
     @GetMapping("/chich")
     public String createUser(@RequestParam String name, @RequestParam String password) {
         UserDetails user = User.withUsername(name)
-                        .password(password)
+                        .password(passwordEncoder.encode(password))
                         .authorities("ROLE_USER")
                         .build();
         userDetailsManager.createUser(user);
