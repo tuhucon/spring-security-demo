@@ -6,6 +6,9 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBean;
+import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,9 +20,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 @RestController
 public class HelloController {
@@ -38,6 +46,19 @@ public class HelloController {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    WebApplicationContext webApplicationContext;
+
+
+    @GetMapping("/filter")
+    public String filter() {
+        webApplicationContext.getServletContext().getFilterRegistrations().forEach((x, y) -> {
+            System.out.println("filter registration name: " + x);
+            System.out.println(y.getClassName());
+        });
+        return "OK";
+    }
 
     @GetMapping("/hello")
     public String hello(HttpSession session) {
