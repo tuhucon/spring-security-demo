@@ -3,9 +3,11 @@ package com.example.security;
 import java.security.Security;
 import java.util.Enumeration;
 
+import javax.servlet.Filter;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityFilterAutoConfiguration;
 import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBean;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
@@ -53,10 +56,18 @@ public class HelloController {
 
     @GetMapping("/filter")
     public String filter() {
-        webApplicationContext.getServletContext().getFilterRegistrations().forEach((x, y) -> {
-            System.out.println("filter registration name: " + x);
-            System.out.println(y.getClassName());
+
+
+        FilterChainProxy proxy = webApplicationContext.getBean("springSecurityFilterChain", FilterChainProxy.class);
+        proxy.getFilterChains().forEach( t -> {
+            t.getFilters().forEach(f -> System.out.println(f.getClass()));
+            System.out.println("------------------------------");
         });
+
+//        webApplicationContext.getServletContext().getFilterRegistrations().forEach((x, y) -> {
+//            System.out.println("filter registration name: " + x);
+//            System.out.println(y.getClassName());
+//        });
         return "OK";
     }
 
