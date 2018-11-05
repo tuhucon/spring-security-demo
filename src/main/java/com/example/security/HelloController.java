@@ -71,6 +71,19 @@ public class HelloController {
         return "OK";
     }
 
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String admin(Authentication authentication) {
+        System.out.println(authentication.getAuthorities());
+        return "admin";
+    }
+
+    @GetMapping("/mod")
+    public String mod(Authentication authentication) {
+        System.out.println(authentication.getAuthorities());
+        return "mod";
+    }
+
     @GetMapping("/hello")
     public String hello(HttpSession session) {
 
