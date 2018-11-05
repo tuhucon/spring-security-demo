@@ -54,7 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"));
 //                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 //                .and().portMapper().http(8080).mapsTo(8083);
-//        http.exceptionHandling().accessDeniedHandler(new NovelDeniedHandler());
+        http.exceptionHandling().accessDeniedHandler(new NovelDeniedHandler());
     }
 
     @Bean

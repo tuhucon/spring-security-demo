@@ -15,12 +15,12 @@ public class NovelDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
-//        response.setStatus(HttpStatus.FORBIDDEN.value());
-//        response.getWriter().print("Deny Handler Error");
-//        System.out.println(accessDeniedException);
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.getWriter().print("Deny Handler Error");
+        System.out.println(accessDeniedException);
         /*
         use sendError with ErrorController
          */
-        response.sendError(HttpStatus.FORBIDDEN.value(), "Deny error");
+//        response.sendError(HttpStatus.FORBIDDEN.value(), "Deny error");
     }
 }
